@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Risk Manager — Ren</title>
+<style>
+  :root{
+    --bg1:#fff3f3; --bg2:#ffecec; --accent:#e05252; --accent-2:#ff8a8a;
+    --card:#ffffff; --muted:#6b6b6b; --maxw:1200px;
+  }
+  html,body{height:100%;margin:0;font-family:Inter, "Segoe UI", Roboto, Arial, sans-serif;background:
+    radial-gradient(1200px 600px at 10% 10%, rgba(224,82,82,0.08), transparent 10%),
+    linear-gradient(180deg,var(--bg1),var(--bg2)); color:#111}
+  .wrap{max-width:var(--maxw);margin:28px auto;padding:22px;border-radius:14px;box-shadow:0 12px 40px rgba(14,20,30,0.08);background:
+    linear-gradient(180deg, rgba(255,255,255,0.65), rgba(255,255,255,0.9));overflow:hidden}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px;box-shadow:0 6px 18px rgba(224,82,82,0.18)}
+  .brand h1{margin:0;font-size:20px}
+  .brand p{margin:0;font-size:12px;color:var(--muted)}
+  .ren-badge{font-weight:700;color:var(--accent);font-style:italic;letter-spacing:0.6px}
+  .top-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+  select,input,textarea,button{font-size:14px;border-radius:8px;border:1px solid #e7e9ec;padding:8px 10px;outline:none}
+  select,input{height:40px}
+  textarea{min-height:92px;resize:vertical}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .muted{color:var(--muted);font-size:13px}
+  .panel{display:grid;grid-template-columns:1fr 380px;gap:16px;margin-top:14px;align-items:start}
+  .card{background:var(--card);padding:14px;border-radius:10px;box-shadow:0 6px 18px rgba(12,18,28,0.04);border:1px solid #f0f2f5}
+  .view-title{font-size:20px;font-weight:800;margin:0 0 8px}
+  .view-title.small{font-size:18px}
+  .view-content{white-space:pre-wrap;color:#111;background:#fff;padding:12px;border-radius:8px;border:1px solid #eef1f6;min-height:160px;font-size:15px;line-height:1.45}
+  .small{font-size:13px;padding:8px 10px;border-radius:8px}
+  button.primary{background:var(--accent);color:#fff;border:none;box-shadow:0 6px 18px rgba(224,82,82,0.12);cursor:pointer;transition:transform .12s}
+  button.primary:hover{transform:translateY(-2px)}
+  button.ghost{background:transparent;border:1px solid #e7e9ec;color:var(--accent);cursor:pointer}
+  button.warn{background:#ffb3b3;color:#700;border:none}
+  .copy-btn{background:#fff;border:1px solid #e7e9ec;color:var(--accent);padding:8px 10px;border-radius:8px;cursor:pointer}
+  .form-row{display:flex;flex-direction:column;gap:8px}
+  label.inline{font-size:12px;color:var(--muted)}
+  .list{margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .group-header{font-weight:800;padding:6px 10px;border-radius:8px;background:linear-gradient(90deg, rgba(224,82,82,0.06), rgba(255,138,138,0.04));color:var(--accent)}
+  .item{background:#fff;padding:12px;border-radius:10px;border:1px solid #f0f2f6;min-height:120px;display:flex;flex-direction:column;justify-content:space-between}
+  .meta{margin-bottom:8px}
+  .item-title{font-weight:700;color:#111;margin-bottom:6px;font-size:15px}
+  .item-sub{font-size:13px;color:var(--muted);margin-bottom:8px}
+  .item-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .admin-only{display:none}
+  .hint{font-size:12px;color:var(--muted);margin-top:8px}
+  .footer{display:flex;gap:8px;align-items:center;margin-top:14px;flex-wrap:wrap}
+  @media(max-width:1100px){.list{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:700px){.panel{grid-template-columns:1fr}.list{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">Ren</div>
+        <div>
+          <h1>Risk Manager</h1>
+          <p>Quản lý & truy vấn kiểm soát rủi ro — <span class="ren-badge">Ren's Tools</span></p>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="display:flex;gap:8px;align-items:center">
+          <div class="muted">Status:</div>
+          <div id="adminIndicator" style="font-weight:700;color:var(--accent);display:none">ADMIN</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- controls -->
+    <div class="top-controls">
+      <div class="row" style="flex:1;min-width:320px">
+        <div style="min-width:160px">
+          <label class="inline muted">Chọn Hệ</label>
+          <select id="systemSelect"></select>
+        </div>
+        <div style="min-width:180px">
+          <label class="inline muted">Chọn Nhóm lỗi</label>
+          <select id="groupSelect"></select>
+        </div>
+        <div style="flex:1;min-width:220px">
+          <label class="inline muted">Tìm (tiêu đề / nội dung)</label>
+          <input id="searchBox" placeholder="Gõ từ khóa... (ví dụ: Trùng IP, Không nạp)">
+        </div>
+      </div>
+
+      <div class="row" style="justify-content:flex-end">
+        <button id="loginBtn" class="ghost small">Đăng nhập Admin</button>
+        <button id="logoutBtn" class="ghost small admin-only">Thoát Admin</button>
+      </div>
+    </div>
+
+    <!-- main panel -->
+    <div class="panel" style="margin-top:12px">
+      <!-- left: view + list -->
+      <div>
+        <div class="card" id="leftCard">
+          <div class="view-title" id="viewTitle">—</div>
+          <div class="view-content" id="viewContent">Chọn Hệ và Nhóm lỗi để xem nội dung</div>
+          <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+            <button class="copy-btn" id="copyViewBtn">COPY NỘI DUNG</button>
+            <button class="copy-btn" id="copyTitleContentBtn">COPY TIÊU ĐỀ + NỘI DUNG</button>
+            <div class="hint">Bạn có thể dùng Export JSON để chia sẻ dữ liệu.</div>
+          </div>
+        </div>
+
+        <div id="listContainer" style="margin-top:12px"></div>
+      </div>
+
+      <!-- right: add/edit -->
+      <div>
+        <div class="card" id="rightCard">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-weight:800">Thêm / Sửa mục</div>
+              <div class="muted" style="font-size:13px">Chỉ Admin mới có quyền sửa</div>
+            </div>
+            <div style="text-align:right">
+              <button id="exportBtn" class="ghost small">Export JSON</button>
+            </div>
+          </div>
+
+          <div style="margin-top:10px" class="form-row">
+            <label class="inline muted">Hệ</label>
+            <input id="newSystem" placeholder="Ví dụ: RUMMY" />
+            <label class="inline muted">Nhóm lỗi</label>
+            <input id="newGroup" placeholder="Ví dụ: TRÙNG IP" />
+            <label class="inline muted">Tiêu đề</label>
+            <input id="newTitle" placeholder="Ví dụ: RUMMY TRÙNG IP" />
+            <label class="inline muted">Nội dung</label>
+            <textarea id="newContent" placeholder="Nhập nội dung chi tiết..."></textarea>
+
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button id="addBtn" class="primary admin-only">ADD</button>
+              <button id="updateBtn" class="ghost admin-only" style="display:none">UPDATE</button>
+              <button id="clearBtn" class="ghost">CLEAR</button>
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+              <label class="file-input ghost admin-only" style="padding:8px;border-radius:8px;cursor:pointer">
+                Import JSON <input id="importFile" type="file" accept="application/json" style="display:none">
+              </label>
+              <button id="resetBtn" class="ghost admin-only">Reset to default</button>
+              <button id="clearStorage" class="ghost admin-only">Clear LocalStorage</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+      <div class="muted">Designed with ❤ by Ren</div>
+      <div class="muted">Phiên bản nội bộ • Lưu trên trình duyệt</div>
+    </div>
+  </div>
+
+<script>
+/* ================== CONFIG ================== */
+const ADMIN_PASSWORD = 'riskadmin'; // đổi nếu cần
+const LS_KEY = 'riskData_v1';
+const ADMIN_LS = 'rm_is_admin_v1';
+
+/* ================== DEFAULT DATA ================== */
+const DEFAULT_DATA = [
+  { system: "RUMMY", group: "TRÙNG IP", title: "RUMMY TRÙNG IP", content: "会员ID : \n*拒绝原因 : 我本人没有充值，上级有多个IP地址，不符合RUMMY MATCH的提现条件。\n*会员风险评级 : 有问题\n*结论 : 扣除奖励" },
+  { system: "RUMMY", group: "KHÔNG NẠP", title: "RUMMY KHÔNG NẠP", content: "会员ID : \n*拒绝原因 : 我和上级都领取了奖励，但还未充值，未达到提现奖励的条件。\n*会员风险评级 : 中嫌疑\n*结论 : 要求成员充值。" },
+  { system: "RUMMY", group: "TỈ LỆ THẤP", title: "RUMMY TỈ LỆ THẤP", content: "会员ID : \n*拒绝原因 : 以低投注比例领取 RUMMY 奖励\n*会员风险评级 : 有问题\n*结论 : 扣除奖励" },
+  { system: "CHƠI MỨC CƯỢC QUÁ THẤP", group: "TỈ LỆ THẤP", title: "CHƠI MỨC CƯỢC QUÁ THẤP - TỈ LỆ THẤP", content: "会员ID : \n*拒绝原因 : 故意下注小额，达到流水直接提现 刷首充奖励\n*会员风险评级 : 中嫌疑\n*结论 : 让会员继续下注" }
+];
+
+/* ================== STATE ================== */
+let data = loadData();
+let editIndex = -1;
+
+/* ================== DOM ================== */
+const systemSelect = document.getElementById('systemSelect');
+const groupSelect = document.getElementById('groupSelect');
+const searchBox = document.getElementById('searchBox');
+const viewTitle = document.getElementById('viewTitle');
+const viewContent = document.getElementById('viewContent');
+const listContainer = document.getElementById('listContainer');
+const listAreaId = 'listAreaGrid';
+
+const newSystem = document.getElementById('newSystem');
+const newGroup = document.getElementById('newGroup');
+const newTitle = document.getElementById('newTitle');
+const newContent = document.getElementById('newContent');
+
+const addBtn = document.getElementById('addBtn');
+const updateBtn = document.getElementById('updateBtn');
+const clearBtn = document.getElementById('clearBtn');
+
+const loginBtn = document.getElementById('loginBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+const adminIndicator = document.getElementById('adminIndicator');
+
+const copyViewBtn = document.getElementById('copyViewBtn');
+const copyTitleContentBtn = document.getElementById('copyTitleContentBtn');
+
+const exportBtn = document.getElementById('exportBtn');
+const importFile = document.getElementById('importFile');
+const resetBtn = document.getElementById('resetBtn');
+const clearStorage = document.getElementById('clearStorage');
+
+const leftCard = document.getElementById('leftCard');
+const rightCard = document.getElementById('rightCard');
+
+/* ================== STORAGE ================== */
+function saveData(){ localStorage.setItem(LS_KEY, JSON.stringify(data)); }
+function loadData(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){ console.warn('LS read error', e); }
+  return JSON.parse(JSON.stringify(DEFAULT_DATA));
+}
+function resetToDefault(){ data = JSON.parse(JSON.stringify(DEFAULT_DATA)); saveData(); refreshAll(); }
+
+/* ================== PERMISSIONS ================== */
+function isAdmin(){ return localStorage.getItem(ADMIN_LS) === '1'; }
+function applyPermissions(){
+  document.querySelectorAll('.admin-only').forEach(el=>{ el.style.display = isAdmin() ? '' : 'none'; });
+  adminIndicator.style.display = isAdmin() ? '' : 'none';
+  logoutBtn.style.display = isAdmin() ? '' : 'none';
+  loginBtn.style.display = isAdmin() ? 'none' : '';
+}
+
+/* ================== HELPERS ================== */
+function uniqueSystems(){ return [...new Set(data.map(d=>d.system))].sort((a,b)=>a.localeCompare(b)); }
+function groupsFor(sys){ return [...new Set(data.filter(d=>d.system===sys).map(d=>d.group))].sort((a,b)=>a.localeCompare(b)); }
+
+/* ================== UI populate ================== */
+function populateSystems(){
+  const prev = systemSelect.value;
+  systemSelect.innerHTML = '';
+  uniqueSystems().forEach(s=>{
+    const o=document.createElement('option'); o.value=s; o.textContent=s; systemSelect.appendChild(o);
+  });
+  if(prev && [...systemSelect.options].some(o=>o.value===prev)) systemSelect.value = prev;
+  populateGroups();
+}
+function populateGroups(){
+  const sys = systemSelect.value || uniqueSystems()[0] || '';
+  groupSelect.innerHTML = '';
+  groupsFor(sys).forEach(g=>{
+    const o=document.createElement('option'); o.value=g; o.textContent=g; groupSelect.appendChild(o);
+  });
+  populateView();
+  renderList();
+}
+function populateView(){
+  const sys = systemSelect.value;
+  const grp = groupSelect.value;
+  if(!sys || !grp){ viewTitle.textContent = '—'; viewContent.textContent = 'Không có dữ liệu'; adjustHeights(); return; }
+  const items = data.filter(d=>d.system===sys && d.group===grp);
+  if(items.length===0){ viewTitle.textContent='—'; viewContent.textContent='Không có dữ liệu'; adjustHeights(); return; }
+  viewTitle.textContent = items[0].title || '—';
+  viewContent.textContent = items.map(i=>i.content).join('\n\n');
+  adjustHeights();
+}
+
+/* ================== render grouped list ================== */
+function renderList(){
+  // container: we'll create grid inside
+  listContainer.innerHTML = '';
+  const q = (searchBox.value||'').trim().toLowerCase();
+
+  // sort data by title (case-insensitive)
+  const filtered = data.filter(d=>{
+    if(!q) return true;
+    const hay = (d.title+' '+d.content+' '+d.system+' '+d.group).toLowerCase();
+    return hay.includes(q);
+  }).sort((a,b)=> (a.title||'').localeCompare(b.title||''));
+
+  if(filtered.length===0){
+    const no = document.createElement('div'); no.className='muted'; no.textContent='Không tìm thấy mục nào';
+    listContainer.appendChild(no); return;
+  }
+
+  // group by first letter of title
+  const groups = {};
+  filtered.forEach(d=>{
+    const first = ((d.title||'').trim().charAt(0) || '#').toUpperCase();
+    if(!groups[first]) groups[first]=[];
+    groups[first].push(d);
+  });
+
+  // create grid wrapper
+  const grid = document.createElement('div'); grid.id = listAreaId;
+  grid.className = 'list';
+  // iterate groups in sorted key order
+  Object.keys(groups).sort().forEach(letter=>{
+    // create a column-like block for this letter: we will add a header then items
+    // To keep 3-column layout but grouping visually, we'll append a fragment containing header + items
+    const frag = document.createDocumentFragment();
+
+    // header spanning full width of one grid cell
+    const header = document.createElement('div');
+    header.className = 'group-header';
+    header.textContent = letter;
+    frag.appendChild(header);
+
+    groups[letter].forEach(d=>{
+      const idx = data.indexOf(d); // original index (useful for edit/delete)
+      const item = document.createElement('div'); item.className='item';
+      const meta = document.createElement('div'); meta.className='meta';
+      const t = document.createElement('div'); t.className='item-title'; t.textContent = d.title;
+      const sub = document.createElement('div'); sub.className='item-sub'; sub.textContent = `${d.system} • ${d.group}`;
+      const c = document.createElement('div'); c.style.whiteSpace='pre-wrap'; c.style.marginTop='6px'; c.textContent = d.content;
+      meta.appendChild(t); meta.appendChild(sub); meta.appendChild(c);
+
+      const actions = document.createElement('div'); actions.className='item-actions';
+      const btnCopy = document.createElement('button'); btnCopy.className='copy-btn small'; btnCopy.textContent='COPY';
+      btnCopy.onclick = ()=>{ copyText(d.content); flash(btnCopy,'Đã copy'); };
+
+      const btnCopyFull = document.createElement('button'); btnCopyFull.className='copy-btn small'; btnCopyFull.textContent='COPY TIÊU ĐỀ + NỘI DUNG';
+      btnCopyFull.onclick = ()=>{ copyText(d.title + '\n' + d.content); flash(btnCopyFull,'Đã copy'); };
+
+      const btnEdit = document.createElement('button'); btnEdit.textContent='SỬA'; btnEdit.className='ghost small admin-only';
+      btnEdit.onclick = ()=>{ startEdit(data.indexOf(d)); };
+
+      const btnDel = document.createElement('button'); btnDel.textContent='XÓA'; btnDel.className='ghost small admin-only';
+      btnDel.style.background='#fff0f0'; btnDel.style.border='1px solid #ffd6d6';
+      btnDel.onclick = ()=>{ if(confirm('Xác nhận xóa mục này?')){ const idx=data.indexOf(d); if(idx>=0){ data.splice(idx,1); saveData(); populateSystems(); } } };
+
+      actions.appendChild(btnCopy); actions.appendChild(btnCopyFull); actions.appendChild(btnEdit); actions.appendChild(btnDel);
+
+      item.appendChild(meta); item.appendChild(actions);
+      frag.appendChild(item);
+    });
+
+    // Append fragment children individually into grid so headers/items appear in sequence
+    Array.from(frag.childNodes).forEach(node=> grid.appendChild(node));
+  });
+
+  listContainer.appendChild(grid);
+  applyPermissions(); // make sure admin-only hidden/shown
+  adjustHeights();
+}
+
+/* ================== CRUD ================== */
+addBtn.addEventListener('click', ()=>{
+  if(!isAdmin()){ alert('Bạn cần đăng nhập Admin để thêm'); return; }
+  const sys = newSystem.value.trim(); const grp = newGroup.value.trim();
+  const title = newTitle.value.trim(); const cont = newContent.value.trim();
+  if(!sys||!grp||!title||!cont){ alert('Vui lòng nhập đầy đủ'); return; }
+  data.push({system:sys, group:grp, title:title, content:cont});
+  saveData(); clearForm(); populateSystems();
+  // set view to new item
+  systemSelect.value = sys; populateGroups(); groupSelect.value = grp; populateView();
+});
+
+function startEdit(idx){
+  if(!isAdmin()){ alert('Bạn cần đăng nhập Admin để sửa'); return; }
+  editIndex = idx;
+  const d = data[idx];
+  newSystem.value = d.system; newGroup.value = d.group; newTitle.value = d.title; newContent.value = d.content;
+  addBtn.style.display = 'none'; updateBtn.style.display = '';
+  // scroll to form
+  rightCard.scrollIntoView({behavior:'smooth', block:'center'});
+  adjustHeights();
+}
+updateBtn.addEventListener('click', ()=>{
+  if(editIndex<0){ alert('Không có mục đang sửa'); return; }
+  const sys = newSystem.value.trim(); const grp = newGroup.value.trim();
+  const title = newTitle.value.trim(); const cont = newContent.value.trim();
+  if(!sys||!grp||!title||!cont){ alert('Vui lòng nhập đầy đủ'); return; }
+  data[editIndex] = {system:sys, group:grp, title:title, content:cont};
+  saveData(); editIndex=-1; clearForm(); addBtn.style.display=''; updateBtn.style.display='none'; populateSystems();
+});
+clearBtn.addEventListener('click', clearForm);
+function clearForm(){ newSystem.value=''; newGroup.value=''; newTitle.value=''; newContent.value=''; editIndex=-1; addBtn.style.display=''; updateBtn.style.display='none'; }
+
+/* ================== Copy helpers ================== */
+function copyText(txt){
+  if(!txt) return;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).catch(()=>{ fallbackCopy(txt); });
+  } else { fallbackCopy(txt); }
+}
+function fallbackCopy(txt){
+  const ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); }catch(e){ alert('Copy thất bại'); }
+  ta.remove();
+}
+function flash(btn, msg){
+  const orig = btn.textContent;
+  btn.textContent = msg || 'OK';
+  setTimeout(()=> btn.textContent = orig, 900);
+}
+document.getElementById('copyViewBtn').onclick = ()=>{ copyText(viewContent.textContent); flash(document.getElementById('copyViewBtn'),'Đã copy'); };
+document.getElementById('copyTitleContentBtn').onclick = ()=>{ copyText(viewTitle.textContent + '\n' + viewContent.textContent); flash(document.getElementById('copyTitleContentBtn'),'Đã copy'); };
+
+/* ================== Export / Import ================== */
+exportBtn.addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'riskData.json'; a.click(); URL.revokeObjectURL(url);
+});
+importFile.addEventListener('change', (e)=>{
+  if(!isAdmin()){ alert('Bạn cần đăng nhập Admin để import'); importFile.value=''; return; }
+  const f = e.target.files[0]; if(!f) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const arr = JSON.parse(reader.result);
+      if(!Array.isArray(arr)) throw new Error('File cần là mảng JSON');
+      if(confirm('Nhập file sẽ thay thế dữ liệu hiện tại. Tiếp tục?')){
+        data = arr; saveData(); populateSystems(); alert('Import thành công');
+      }
+    }catch(err){ alert('Lỗi import: '+err.message); }
+  };
+  reader.readAsText(f);
+});
+
+/* ================== Reset / Clear ================== */
+resetBtn.addEventListener('click', ()=>{ if(!isAdmin()){ alert('Bạn cần đăng nhập Admin để reset'); return; } if(confirm('Reset về dữ liệu mặc định?')) resetToDefault(); });
+clearStorage.addEventListener('click', ()=>{ if(!isAdmin()){ alert('Bạn cần đăng nhập Admin để xóa LocalStorage'); return; } if(confirm('Xóa dữ liệu (LocalStorage) sẽ mất)?')){ localStorage.removeItem(LS_KEY); data = loadData(); populateSystems(); } });
+
+/* ================== Login / Logout ================== */
+loginBtn.addEventListener('click', ()=>{
+  const pwd = prompt('Nhập mật khẩu Admin:');
+  if(pwd === ADMIN_PASSWORD){ localStorage.setItem(ADMIN_LS,'1'); applyPermissions(); renderList(); alert('Đăng nhập Admin thành công'); }
+  else alert('Sai mật khẩu');
+});
+logoutBtn.addEventListener('click', ()=>{ if(confirm('Thoát Admin?')){ localStorage.removeItem(ADMIN_LS); applyPermissions(); renderList(); alert('Đã thoát Admin'); } });
+
+/* ================== Search / Select events ================== */
+searchBox.addEventListener('input', ()=>{ renderList(); });
+systemSelect.addEventListener('change', ()=>{ populateGroups(); });
+groupSelect.addEventListener('change', ()=>{ populateView(); renderList(); });
+
+/* ================== Height adjust ================== */
+function adjustHeights(){
+  // make view-content min-height approximate right card total height minus header/buttons
+  try{
+    const rightH = rightCard.getBoundingClientRect().height;
+    // set left card content min height to match right card (minus some for title and controls)
+    const leftPadding = 120; // approx: title + copy area etc
+    const minH = Math.max(160, rightH - leftPadding);
+    viewContent.style.minHeight = minH + 'px';
+    // also ensure left card overall not shorter
+    leftCard.style.minHeight = (rightH + 10) + 'px';
+  }catch(e){ /* ignore */ }
+}
+window.addEventListener('resize', ()=>{ adjustHeights(); });
+
+/* ================== Refresh / Init ================== */
+function populateSystems(){ // override because called elsewhere
+  const prev = systemSelect.value;
+  systemSelect.innerHTML = '';
+  uniqueSystems().forEach(s=>{
+    const o=document.createElement('option'); o.value=s; o.textContent=s; systemSelect.appendChild(o);
+  });
+  if(prev && [...systemSelect.options].some(o=>o.value===prev)) systemSelect.value = prev;
+  populateGroups();
+}
+function refreshAll(){ applyPermissions(); populateSystems(); renderList(); populateView(); adjustHeights(); }
+function init(){
+  applyPermissions();
+  refreshAll();
+}
+init();
+</script>
+</body>
+</html>
