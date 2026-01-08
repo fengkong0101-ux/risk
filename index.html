@@ -5,53 +5,68 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Risk Manager — Ren</title>
 <style>
+  /* ---------- Theme & Layout ---------- */
   :root{
-    --bg1:#fff3f3; --bg2:#ffecec; --accent:#e05252; --accent-2:#ff8a8a;
-    --card:#ffffff; --muted:#6b6b6b; --maxw:1200px;
+    --bg1: #fff3f3;
+    --bg2: #ffecec;
+    --accent: #e05252; /* red-ish accent */
+    --accent-2: #ff8a8a;
+    --card-bg: #ffffff;
+    --muted: #6b6b6b;
+    --maxw:1100px;
   }
   html,body{height:100%;margin:0;font-family:Inter, "Segoe UI", Roboto, Arial, sans-serif;background:
     radial-gradient(1200px 600px at 10% 10%, rgba(224,82,82,0.08), transparent 10%),
-    linear-gradient(180deg,var(--bg1),var(--bg2)); color:#111}
+    linear-gradient(180deg,var(--bg1),var(--bg2));
+    color:#111}
   .wrap{max-width:var(--maxw);margin:28px auto;padding:22px;border-radius:14px;box-shadow:0 12px 40px rgba(14,20,30,0.08);background:
     linear-gradient(180deg, rgba(255,255,255,0.65), rgba(255,255,255,0.9));overflow:hidden}
   header{display:flex;align-items:center;justify-content:space-between;gap:12px}
   .brand{display:flex;align-items:center;gap:12px}
-  .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));
-    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px;box-shadow:0 6px 18px rgba(224,82,82,0.18)}
-  .brand h1{margin:0;font-size:20px}
+  .logo{
+    width:56px;height:56px;border-radius:10px;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:20px;box-shadow:0 6px 18px rgba(224,82,82,0.18)
+  }
+  .brand h1{margin:0;font-size:20px;line-height:1}
   .brand p{margin:0;font-size:12px;color:var(--muted)}
   .ren-badge{font-weight:700;color:var(--accent);font-style:italic;letter-spacing:0.6px}
+  /* top controls */
   .top-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
   select,input,textarea,button{font-size:14px;border-radius:8px;border:1px solid #e7e9ec;padding:8px 10px;outline:none}
   select,input{height:40px}
   textarea{min-height:92px;resize:vertical}
   .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
   .muted{color:var(--muted);font-size:13px}
-  .panel{display:grid;grid-template-columns:1fr 380px;gap:16px;margin-top:14px;align-items:start}
-  .card{background:var(--card);padding:14px;border-radius:10px;box-shadow:0 6px 18px rgba(12,18,28,0.04);border:1px solid #f0f2f5}
-  .view-title{font-size:20px;font-weight:800;margin:0 0 8px}
-  .view-title.small{font-size:18px}
-  .view-content{white-space:pre-wrap;color:#111;background:#fff;padding:12px;border-radius:8px;border:1px solid #eef1f6;min-height:160px;font-size:15px;line-height:1.45}
+  /* panel */
+  .panel{display:grid;grid-template-columns:1fr 360px;gap:16px;margin-top:14px}
+  .card{background:var(--card-bg);padding:14px;border-radius:10px;box-shadow:0 6px 18px rgba(12,18,28,0.04);border:1px solid #f0f2f5}
+  .view-title{font-size:18px;font-weight:700;margin:0 0 8px}
+  .view-content{white-space:pre-wrap;color:#111;background:#fff;padding:12px;border-radius:8px;border:1px solid #eef1f6;min-height:120px}
   .small{font-size:13px;padding:8px 10px;border-radius:8px}
   button.primary{background:var(--accent);color:#fff;border:none;box-shadow:0 6px 18px rgba(224,82,82,0.12);cursor:pointer;transition:transform .12s}
   button.primary:hover{transform:translateY(-2px)}
   button.ghost{background:transparent;border:1px solid #e7e9ec;color:var(--accent);cursor:pointer}
   button.warn{background:#ffb3b3;color:#700;border:none}
   .copy-btn{background:#fff;border:1px solid #e7e9ec;color:var(--accent);padding:8px 10px;border-radius:8px;cursor:pointer}
+  /* add/edit form */
   .form-row{display:flex;flex-direction:column;gap:8px}
   label.inline{font-size:12px;color:var(--muted)}
-  .list{margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-  .group-header{font-weight:800;padding:6px 10px;border-radius:8px;background:linear-gradient(90deg, rgba(224,82,82,0.06), rgba(255,138,138,0.04));color:var(--accent)}
-  .item{background:#fff;padding:12px;border-radius:10px;border:1px solid #f0f2f6;min-height:120px;display:flex;flex-direction:column;justify-content:space-between}
-  .meta{margin-bottom:8px}
-  .item-title{font-weight:700;color:#111;margin-bottom:6px;font-size:15px}
+  /* list */
+  .list{margin-top:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+  .item{background:#fff;padding:12px;border-radius:10px;border:1px solid #f0f2f6;min-height:110px;display:flex;flex-direction:column;justify-content:space-between}
+  .item .meta{margin-bottom:8px}
+  .item-title{font-weight:700;color:#111;margin-bottom:6px}
   .item-sub{font-size:13px;color:var(--muted);margin-bottom:8px}
-  .item-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .item-actions{display:flex;gap:8px;align-items:center}
   .admin-only{display:none}
   .hint{font-size:12px;color:var(--muted);margin-top:8px}
+  /* footer */
   .footer{display:flex;gap:8px;align-items:center;margin-top:14px;flex-wrap:wrap}
-  @media(max-width:1100px){.list{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:700px){.panel{grid-template-columns:1fr}.list{grid-template-columns:1fr}}
+  /* responsive */
+  @media(max-width:920px){.panel{grid-template-columns:1fr}.brand p{display:none}}
+  /* subtle animate */
+  .glow{box-shadow:0 6px 24px rgba(224,82,82,0.12)}
 </style>
 </head>
 <body>
@@ -99,7 +114,7 @@
     <div class="panel" style="margin-top:12px">
       <!-- left: view + list -->
       <div>
-        <div class="card" id="leftCard">
+        <div class="card">
           <div class="view-title" id="viewTitle">—</div>
           <div class="view-content" id="viewContent">Chọn Hệ và Nhóm lỗi để xem nội dung</div>
           <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
@@ -109,15 +124,15 @@
           </div>
         </div>
 
-        <div id="listContainer" style="margin-top:12px"></div>
+        <div class="list" id="listArea" style="margin-top:12px"></div>
       </div>
 
       <!-- right: add/edit -->
       <div>
-        <div class="card" id="rightCard">
+        <div class="card">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <div>
-              <div style="font-weight:800">Thêm / Sửa mục</div>
+              <div style="font-weight:700">Thêm / Sửa mục</div>
               <div class="muted" style="font-size:13px">Chỉ Admin mới có quyền sửa</div>
             </div>
             <div style="text-align:right">
@@ -166,7 +181,7 @@ const ADMIN_PASSWORD = 'riskadmin'; // đổi nếu cần
 const LS_KEY = 'riskData_v1';
 const ADMIN_LS = 'rm_is_admin_v1';
 
-/* ================== DEFAULT DATA ================== */
+/* ================== Default Data ================== */
 const DEFAULT_DATA = [
   { system: "RUMMY", group: "TRÙNG IP", title: "RUMMY TRÙNG IP", content: "会员ID : \n*拒绝原因 : 我本人没有充值，上级有多个IP地址，不符合RUMMY MATCH的提现条件。\n*会员风险评级 : 有问题\n*结论 : 扣除奖励" },
   { system: "RUMMY", group: "KHÔNG NẠP", title: "RUMMY KHÔNG NẠP", content: "会员ID : \n*拒绝原因 : 我和上级都领取了奖励，但还未充值，未达到提现奖励的条件。\n*会员风险评级 : 中嫌疑\n*结论 : 要求成员充值。" },
@@ -174,7 +189,7 @@ const DEFAULT_DATA = [
   { system: "CHƠI MỨC CƯỢC QUÁ THẤP", group: "TỈ LỆ THẤP", title: "CHƠI MỨC CƯỢC QUÁ THẤP - TỈ LỆ THẤP", content: "会员ID : \n*拒绝原因 : 故意下注小额，达到流水直接提现 刷首充奖励\n*会员风险评级 : 中嫌疑\n*结论 : 让会员继续下注" }
 ];
 
-/* ================== STATE ================== */
+/* ================== State ================== */
 let data = loadData();
 let editIndex = -1;
 
@@ -184,8 +199,7 @@ const groupSelect = document.getElementById('groupSelect');
 const searchBox = document.getElementById('searchBox');
 const viewTitle = document.getElementById('viewTitle');
 const viewContent = document.getElementById('viewContent');
-const listContainer = document.getElementById('listContainer');
-const listAreaId = 'listAreaGrid';
+const listArea = document.getElementById('listArea');
 
 const newSystem = document.getElementById('newSystem');
 const newGroup = document.getElementById('newGroup');
@@ -208,10 +222,7 @@ const importFile = document.getElementById('importFile');
 const resetBtn = document.getElementById('resetBtn');
 const clearStorage = document.getElementById('clearStorage');
 
-const leftCard = document.getElementById('leftCard');
-const rightCard = document.getElementById('rightCard');
-
-/* ================== STORAGE ================== */
+/* ================== Storage ================== */
 function saveData(){ localStorage.setItem(LS_KEY, JSON.stringify(data)); }
 function loadData(){
   try{
@@ -222,7 +233,7 @@ function loadData(){
 }
 function resetToDefault(){ data = JSON.parse(JSON.stringify(DEFAULT_DATA)); saveData(); refreshAll(); }
 
-/* ================== PERMISSIONS ================== */
+/* ================== Permissions ================== */
 function isAdmin(){ return localStorage.getItem(ADMIN_LS) === '1'; }
 function applyPermissions(){
   document.querySelectorAll('.admin-only').forEach(el=>{ el.style.display = isAdmin() ? '' : 'none'; });
@@ -231,16 +242,16 @@ function applyPermissions(){
   loginBtn.style.display = isAdmin() ? 'none' : '';
 }
 
-/* ================== HELPERS ================== */
-function uniqueSystems(){ return [...new Set(data.map(d=>d.system))].sort((a,b)=>a.localeCompare(b)); }
-function groupsFor(sys){ return [...new Set(data.filter(d=>d.system===sys).map(d=>d.group))].sort((a,b)=>a.localeCompare(b)); }
+/* ================== Helpers ================== */
+function uniqueSystems(){ return [...new Set(data.map(d=>d.system))].sort(); }
+function groupsFor(sys){ return [...new Set(data.filter(d=>d.system===sys).map(d=>d.group))].sort(); }
 
-/* ================== UI populate ================== */
+/* ================== UI Populate ================== */
 function populateSystems(){
   const prev = systemSelect.value;
   systemSelect.innerHTML = '';
   uniqueSystems().forEach(s=>{
-    const o=document.createElement('option'); o.value=s; o.textContent=s; systemSelect.appendChild(o);
+    const o = document.createElement('option'); o.value = s; o.textContent = s; systemSelect.appendChild(o);
   });
   if(prev && [...systemSelect.options].some(o=>o.value===prev)) systemSelect.value = prev;
   populateGroups();
@@ -249,7 +260,7 @@ function populateGroups(){
   const sys = systemSelect.value || uniqueSystems()[0] || '';
   groupSelect.innerHTML = '';
   groupsFor(sys).forEach(g=>{
-    const o=document.createElement('option'); o.value=g; o.textContent=g; groupSelect.appendChild(o);
+    const o = document.createElement('option'); o.value = g; o.textContent = g; groupSelect.appendChild(o);
   });
   populateView();
   renderList();
@@ -257,91 +268,52 @@ function populateGroups(){
 function populateView(){
   const sys = systemSelect.value;
   const grp = groupSelect.value;
-  if(!sys || !grp){ viewTitle.textContent = '—'; viewContent.textContent = 'Không có dữ liệu'; adjustHeights(); return; }
+  if(!sys || !grp){ viewTitle.textContent = '—'; viewContent.textContent = 'Không có dữ liệu'; return; }
   const items = data.filter(d=>d.system===sys && d.group===grp);
-  if(items.length===0){ viewTitle.textContent='—'; viewContent.textContent='Không có dữ liệu'; adjustHeights(); return; }
+  if(items.length===0){ viewTitle.textContent='—'; viewContent.textContent='Không có dữ liệu'; return; }
+  // show first item title and content concatenated (or all)
   viewTitle.textContent = items[0].title || '—';
   viewContent.textContent = items.map(i=>i.content).join('\n\n');
-  adjustHeights();
 }
 
-/* ================== render grouped list ================== */
+/* ================== Render list ================== */
 function renderList(){
-  // container: we'll create grid inside
-  listContainer.innerHTML = '';
+  listArea.innerHTML = '';
   const q = (searchBox.value||'').trim().toLowerCase();
-
-  // sort data by title (case-insensitive)
-  const filtered = data.filter(d=>{
-    if(!q) return true;
+  data.forEach((d, idx)=>{
     const hay = (d.title+' '+d.content+' '+d.system+' '+d.group).toLowerCase();
-    return hay.includes(q);
-  }).sort((a,b)=> (a.title||'').localeCompare(b.title||''));
+    if(q && !hay.includes(q)) return;
+    const el = document.createElement('div'); el.className='item';
+    const meta = document.createElement('div'); meta.className='meta';
+    const t = document.createElement('div'); t.className='item-title'; t.textContent = d.title;
+    const sub = document.createElement('div'); sub.className='item-sub'; sub.textContent = `${d.system} • ${d.group}`;
+    const c = document.createElement('div'); c.style.whiteSpace='pre-wrap'; c.style.marginTop='6px'; c.textContent = d.content;
 
-  if(filtered.length===0){
-    const no = document.createElement('div'); no.className='muted'; no.textContent='Không tìm thấy mục nào';
-    listContainer.appendChild(no); return;
-  }
+    meta.appendChild(t); meta.appendChild(sub); meta.appendChild(c);
 
-  // group by first letter of title
-  const groups = {};
-  filtered.forEach(d=>{
-    const first = ((d.title||'').trim().charAt(0) || '#').toUpperCase();
-    if(!groups[first]) groups[first]=[];
-    groups[first].push(d);
+    const actions = document.createElement('div'); actions.className='item-actions';
+    const btnCopy = document.createElement('button'); btnCopy.className='copy-btn small'; btnCopy.textContent='COPY';
+    btnCopy.onclick = ()=>{ copyText(d.content); flash(btnCopy,'Đã copy'); };
+
+    const btnCopyFull = document.createElement('button'); btnCopyFull.className='copy-btn small'; btnCopyFull.textContent='COPY TIÊU ĐỀ + NỘI DUNG';
+    btnCopyFull.onclick = ()=>{ copyText(d.title + '\n' + d.content); flash(btnCopyFull,'Đã copy'); };
+
+    const btnEdit = document.createElement('button'); btnEdit.textContent='SỬA'; btnEdit.className='ghost small admin-only';
+    btnEdit.onclick = ()=>{ startEdit(idx); };
+
+    const btnDel = document.createElement('button'); btnDel.textContent='XÓA'; btnDel.className='ghost small admin-only';
+    btnDel.style.background='#fff0f0'; btnDel.style.border='1px solid #ffd6d6';
+    btnDel.onclick = ()=>{ if(confirm('Xác nhận xóa mục này?')){ data.splice(idx,1); saveData(); populateSystems(); } };
+
+    actions.appendChild(btnCopy);
+    actions.appendChild(btnCopyFull);
+    actions.appendChild(btnEdit);
+    actions.appendChild(btnDel);
+
+    el.appendChild(meta);
+    el.appendChild(actions);
+    listArea.appendChild(el);
   });
-
-  // create grid wrapper
-  const grid = document.createElement('div'); grid.id = listAreaId;
-  grid.className = 'list';
-  // iterate groups in sorted key order
-  Object.keys(groups).sort().forEach(letter=>{
-    // create a column-like block for this letter: we will add a header then items
-    // To keep 3-column layout but grouping visually, we'll append a fragment containing header + items
-    const frag = document.createDocumentFragment();
-
-    // header spanning full width of one grid cell
-    const header = document.createElement('div');
-    header.className = 'group-header';
-    header.textContent = letter;
-    frag.appendChild(header);
-
-    groups[letter].forEach(d=>{
-      const idx = data.indexOf(d); // original index (useful for edit/delete)
-      const item = document.createElement('div'); item.className='item';
-      const meta = document.createElement('div'); meta.className='meta';
-      const t = document.createElement('div'); t.className='item-title'; t.textContent = d.title;
-      const sub = document.createElement('div'); sub.className='item-sub'; sub.textContent = `${d.system} • ${d.group}`;
-      const c = document.createElement('div'); c.style.whiteSpace='pre-wrap'; c.style.marginTop='6px'; c.textContent = d.content;
-      meta.appendChild(t); meta.appendChild(sub); meta.appendChild(c);
-
-      const actions = document.createElement('div'); actions.className='item-actions';
-      const btnCopy = document.createElement('button'); btnCopy.className='copy-btn small'; btnCopy.textContent='COPY';
-      btnCopy.onclick = ()=>{ copyText(d.content); flash(btnCopy,'Đã copy'); };
-
-      const btnCopyFull = document.createElement('button'); btnCopyFull.className='copy-btn small'; btnCopyFull.textContent='COPY TIÊU ĐỀ + NỘI DUNG';
-      btnCopyFull.onclick = ()=>{ copyText(d.title + '\n' + d.content); flash(btnCopyFull,'Đã copy'); };
-
-      const btnEdit = document.createElement('button'); btnEdit.textContent='SỬA'; btnEdit.className='ghost small admin-only';
-      btnEdit.onclick = ()=>{ startEdit(data.indexOf(d)); };
-
-      const btnDel = document.createElement('button'); btnDel.textContent='XÓA'; btnDel.className='ghost small admin-only';
-      btnDel.style.background='#fff0f0'; btnDel.style.border='1px solid #ffd6d6';
-      btnDel.onclick = ()=>{ if(confirm('Xác nhận xóa mục này?')){ const idx=data.indexOf(d); if(idx>=0){ data.splice(idx,1); saveData(); populateSystems(); } } };
-
-      actions.appendChild(btnCopy); actions.appendChild(btnCopyFull); actions.appendChild(btnEdit); actions.appendChild(btnDel);
-
-      item.appendChild(meta); item.appendChild(actions);
-      frag.appendChild(item);
-    });
-
-    // Append fragment children individually into grid so headers/items appear in sequence
-    Array.from(frag.childNodes).forEach(node=> grid.appendChild(node));
-  });
-
-  listContainer.appendChild(grid);
-  applyPermissions(); // make sure admin-only hidden/shown
-  adjustHeights();
 }
 
 /* ================== CRUD ================== */
@@ -362,9 +334,6 @@ function startEdit(idx){
   const d = data[idx];
   newSystem.value = d.system; newGroup.value = d.group; newTitle.value = d.title; newContent.value = d.content;
   addBtn.style.display = 'none'; updateBtn.style.display = '';
-  // scroll to form
-  rightCard.scrollIntoView({behavior:'smooth', block:'center'});
-  adjustHeights();
 }
 updateBtn.addEventListener('click', ()=>{
   if(editIndex<0){ alert('Không có mục đang sửa'); return; }
@@ -392,10 +361,10 @@ function fallbackCopy(txt){
 function flash(btn, msg){
   const orig = btn.textContent;
   btn.textContent = msg || 'OK';
-  setTimeout(()=> btn.textContent = orig, 900);
+  setTimeout(()=> btn.textContent = orig, 1000);
 }
-document.getElementById('copyViewBtn').onclick = ()=>{ copyText(viewContent.textContent); flash(document.getElementById('copyViewBtn'),'Đã copy'); };
-document.getElementById('copyTitleContentBtn').onclick = ()=>{ copyText(viewTitle.textContent + '\n' + viewContent.textContent); flash(document.getElementById('copyTitleContentBtn'),'Đã copy'); };
+copyViewBtn.onclick = ()=>{ copyText(viewContent.textContent); flash(copyViewBtn,'Đã copy'); };
+copyTitleContentBtn.onclick = ()=>{ copyText(viewTitle.textContent + '\n' + viewContent.textContent); flash(copyTitleContentBtn,'Đã copy'); };
 
 /* ================== Export / Import ================== */
 exportBtn.addEventListener('click', ()=>{
@@ -423,46 +392,47 @@ importFile.addEventListener('change', (e)=>{
 resetBtn.addEventListener('click', ()=>{ if(!isAdmin()){ alert('Bạn cần đăng nhập Admin để reset'); return; } if(confirm('Reset về dữ liệu mặc định?')) resetToDefault(); });
 clearStorage.addEventListener('click', ()=>{ if(!isAdmin()){ alert('Bạn cần đăng nhập Admin để xóa LocalStorage'); return; } if(confirm('Xóa dữ liệu (LocalStorage) sẽ mất)?')){ localStorage.removeItem(LS_KEY); data = loadData(); populateSystems(); } });
 
-/* ================== Login / Logout ================== */
-loginBtn.addEventListener('click', ()=>{
+/* ================== Login / Logout (robust, không thay UI) ================== */
+/* Thay thế handler cũ bằng 2 hàm rõ ràng, vẫn dùng ADMIN_PASSWORD và ADMIN_LS */
+function doLogin(){
   const pwd = prompt('Nhập mật khẩu Admin:');
-  if(pwd === ADMIN_PASSWORD){ localStorage.setItem(ADMIN_LS,'1'); applyPermissions(); renderList(); alert('Đăng nhập Admin thành công'); }
-  else alert('Sai mật khẩu');
-});
-logoutBtn.addEventListener('click', ()=>{ if(confirm('Thoát Admin?')){ localStorage.removeItem(ADMIN_LS); applyPermissions(); renderList(); alert('Đã thoát Admin'); } });
+  if(pwd === null) return; // user hủy
+  if(pwd === ADMIN_PASSWORD){
+    localStorage.setItem(ADMIN_LS, '1');
+    applyPermissions();
+    renderList();
+    alert('Đăng nhập Admin thành công');
+    // scroll tới phần admin để user thấy quyền
+    const firstAdmin = document.querySelector('.admin-only');
+    if(firstAdmin) firstAdmin.scrollIntoView({behavior:'smooth', block:'center'});
+  } else {
+    alert('Sai mật khẩu');
+  }
+}
+function doLogout(){
+  if(!confirm('Thoát Admin?')) return;
+  localStorage.removeItem(ADMIN_LS);
+  applyPermissions();
+  renderList();
+  alert('Đã thoát Admin');
+}
+// đảm bảo không gắn nhiều listener trùng (nếu script chạy lại)
+try {
+  loginBtn.removeEventListener && loginBtn.removeEventListener('click', doLogin);
+  logoutBtn.removeEventListener && logoutBtn.removeEventListener('click', doLogout);
+} catch(e){ /* ignore */ }
+loginBtn.addEventListener('click', doLogin);
+logoutBtn.addEventListener('click', doLogout);
 
 /* ================== Search / Select events ================== */
 searchBox.addEventListener('input', ()=>{ renderList(); });
 systemSelect.addEventListener('change', ()=>{ populateGroups(); });
 groupSelect.addEventListener('change', ()=>{ populateView(); renderList(); });
 
-/* ================== Height adjust ================== */
-function adjustHeights(){
-  // make view-content min-height approximate right card total height minus header/buttons
-  try{
-    const rightH = rightCard.getBoundingClientRect().height;
-    // set left card content min height to match right card (minus some for title and controls)
-    const leftPadding = 120; // approx: title + copy area etc
-    const minH = Math.max(160, rightH - leftPadding);
-    viewContent.style.minHeight = minH + 'px';
-    // also ensure left card overall not shorter
-    leftCard.style.minHeight = (rightH + 10) + 'px';
-  }catch(e){ /* ignore */ }
-}
-window.addEventListener('resize', ()=>{ adjustHeights(); });
-
-/* ================== Refresh / Init ================== */
-function populateSystems(){ // override because called elsewhere
-  const prev = systemSelect.value;
-  systemSelect.innerHTML = '';
-  uniqueSystems().forEach(s=>{
-    const o=document.createElement('option'); o.value=s; o.textContent=s; systemSelect.appendChild(o);
-  });
-  if(prev && [...systemSelect.options].some(o=>o.value===prev)) systemSelect.value = prev;
-  populateGroups();
-}
-function refreshAll(){ applyPermissions(); populateSystems(); renderList(); populateView(); adjustHeights(); }
+/* ================== Init ================== */
+function refreshAll(){ applyPermissions(); populateSystems(); renderList(); populateView(); }
 function init(){
+  // initial UI
   applyPermissions();
   refreshAll();
 }
